@@ -5,6 +5,8 @@ use std::collections::HashMap;
 
 use crate::session::WsClientSession;
 
+// Структура SessionData используется для хранения данных, связанных с каждым сеансом WebSocket. 
+// В этом случае он просто хранит адрес актера WsClientSession клиента.
 struct SessionData {
     client_addr: Addr<WsClientSession>,
 }
@@ -27,6 +29,8 @@ impl Actor for ChatManager {
     type Context = Context<Self>;
 }
 
+// Connect: этот обработчик вызывается, когда новый клиент WebSocket подключается к серверу. 
+// Он генерирует новый идентификатор клиента и сохраняет адрес клиента в хэш-карте.
 impl Handler<Connect> for ChatManager {
     type Result = usize;
 
@@ -45,6 +49,8 @@ impl Handler<Connect> for ChatManager {
     }
 }
 
+// Disconnect: этот обработчик вызывается, когда клиент WebSocket отключается от сервера. 
+// Он удаляет данные сеанса клиента из хэш-карты.
 impl Handler<Disconnect> for ChatManager {
     type Result = ();
 
@@ -54,6 +60,9 @@ impl Handler<Disconnect> for ChatManager {
     }
 }
 
+
+// ChatMessage: этот обработчик вызывается, когда клиент WebSocket отправляет сообщение чата на сервер. 
+// Он рассылает сообщение всем подключенным клиентам, кроме отправителя.
 impl Handler<ChatMessage> for ChatManager {
     type Result = ();
 
@@ -84,3 +93,10 @@ pub struct ChatMessage {
     pub client_id: usize,
     pub message: String,
 }
+
+
+// Сообщение Connect возвращает идентификатор нового подключенного клиента. Сообщение ChatMessage ничего не возвращает.
+
+// Код использует инфраструктуру акторов Actix для управления сеансами и сообщениями WebSocket. 
+// Он также использует крейт rand для генерации случайных идентификаторов клиентов и крейт serde для сериализации сообщений чата.
+
